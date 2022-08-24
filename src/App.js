@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { WordAnalysis, chooseRandomWord, getWordsOfLength } from './computer';
+import { chooseRandomWord, getWordsOfLength, winningWords } from './computer';
 import { playSound } from './library/sounds'
 import "./App.css";
 import { dictionary } from "./ghost";
@@ -24,19 +24,30 @@ function App() {
     // getting array of possible words from current prefix
     const prefixWords = words.current.getPrefix(letters);
 
-    // using WordAnalysis method to determine if computer has
-    // favorable odds and returning longest word as well
-    const [odds, evenWords, longest] = WordAnalysis(prefixWords, letters.length + 1);
+    // if letters < 3 than just choose random word from prefix list
+    if (letters.length < 3) {
+      let randomWord = '';
+      while (randomWord.length <= letters.length) randomWord = chooseRandomWord(prefixWords);
+      // determine new letter and set state
+      const newLetter = randomWord[letters.length];
+      setLetters(letters + newLetter);
+      return newLetter;
+    }
+    // using winningWord method to determine if computer has
+    // favorable odds, return array of top words to choose from,
+    // and returning longest word as well
+    const [odds, winners, longest] = winningWords(prefixWords, letters.length);
 
-    console.log(`odds are ${odds},longest word is of length ${longest}`)
+    console.log(`odds are ${odds},longest word is of length ${longest}`);
+    console.log(`winners are ${winners}`);
+
 
     if (odds) { // WIN SCENARIO
 
 
       // we pull a random word that contains the prefix contained in 'letters'
       // than the computer's letter will be the letters.length character of that word
-      let randomWord = '';
-      randomWord = chooseRandomWord(evenWords);
+      const randomWord = chooseRandomWord(winners);
       console.log('getting word');
       console.log(randomWord);
       // since gameLogic ran right before this function was called
@@ -50,10 +61,10 @@ function App() {
     else { // LOSE SCENARIO
 
       // computer odds are 50% or less, so lets stretch out the game
-      // by picking the longest words
+      // by picking from words of the longest length 
       const LongestWords = getWordsOfLength(prefixWords, longest);
       console.log(LongestWords);
-      const LongWord = chooseRandomWord(LongestWords, longest);
+      const LongWord = chooseRandomWord(LongestWords);
       const newLetter = LongWord[letters.length];
       // setting state 
       setLetters(letters + newLetter);
@@ -74,20 +85,19 @@ function App() {
         const _words = words.current.getPrefix(sequence);
         setMatches([..._words]);
 
-        //check if sequence form word, if so we have a winner!
+        //check if sequence form word, if so it's a losing move! 
 
         if (words.current.hasWord(sequence)) {
           //WE GOT A WINNER!  
           console.log(`${sequence} is a word`)
           if (currentPlayer === 'human') {
-            setWin('Human Player has WON!');
-            setIsWinner(true);
-            playSound('win')
-          } else {
-
             setWin('Computer has WON!');
             setIsWinner(true);
             playSound('lost')
+          } else {
+            setWin('Human Player has WON!');
+            setIsWinner(true);
+            playSound('win')
           }
         }
       }
