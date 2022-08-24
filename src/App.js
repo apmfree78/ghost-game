@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from "react";
-import { WordAnalysis } from './computer.js';
+import { WordAnalysis } from './computer';
+import { playSound } from './library/sounds'
 import "./App.css";
-import { dictionary } from "./ghost.js";
+import { dictionary } from "./ghost";
 import trie from 'trie-prefix-tree';
 
 function App() {
@@ -78,10 +79,12 @@ function App() {
           if (currentPlayer === 'human') {
             setWin('Human Player has WON!');
             setIsWinner(true);
+            playSound('win')
           } else {
 
             setWin('Computer has WON!');
             setIsWinner(true);
+            playSound('lost')
           }
         }
       }
@@ -91,9 +94,11 @@ function App() {
         if (currentPlayer === 'human') {
           setWin('Computer has WON!');
           setIsWinner(true);
+          playSound('lost')
         } else {
           setWin('Human Player has WON!');
           setIsWinner(true);
+          playSound('win')
         }
       }
     }
@@ -105,6 +110,9 @@ function App() {
     }
   }
 
+  // human just finished it turn, 
+  // running gameLogic to see if there is a winner
+  // and then switching to turn to computer
   const finishTurn = () => {
     // human has finished turn
     // run gameLogic to see if game is over and there is a winner
@@ -114,6 +122,8 @@ function App() {
     setTurn(!turn);
   }
 
+  // this useEffect runs when 'turn' changes
+  // then if there is no winner , computer plays
   useEffect(() => {
     //now it's computer's turn to play if there is no winner
     if (!isWinner && letters !== '') {
@@ -123,6 +133,8 @@ function App() {
     }
   }, [turn])
 
+
+  // validate user input and set state
   const handleOnChange = (event) => {
     const currentInput = event.target.value;
 
@@ -135,6 +147,7 @@ function App() {
 
   return (
     <div className="App">
+      <h1>Ghost Game</h1>
       <label htmlFor="search">Enter Letter:{` `}</label>
       <input
         type="text"
@@ -143,7 +156,7 @@ function App() {
         id="search"
         onChange={handleOnChange}
       />
-      <button onClick={finishTurn}>Finish Turn</button>
+      <button className="button_title" onClick={finishTurn}>Finish Turn</button>
       {win && <div>{win}</div>}
       <ul>
         {matches && matches.map(word => <li key={word}>{word}</li>)}
