@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { WordAnalysis } from './computer';
+import { WordAnalysis, chooseRandomWord, getWordsOfLength } from './computer';
 import { playSound } from './library/sounds'
 import "./App.css";
 import { dictionary } from "./ghost";
@@ -26,9 +26,9 @@ function App() {
 
     // using WordAnalysis method to determine if computer has
     // favorable odds and returning longest word as well
-    const [odds, longestWord] = WordAnalysis(prefixWords);
+    const [odds, evenWords, longest] = WordAnalysis(prefixWords, letters.length + 1);
 
-    console.log(`odds are ${odds},longest word is ${longestWord}`)
+    console.log(`odds are ${odds},longest word is of length ${longest}`)
 
     if (odds) { // WIN SCENARIO
 
@@ -36,7 +36,7 @@ function App() {
       // we pull a random word that contains the prefix contained in 'letters'
       // than the computer's letter will be the letters.length character of that word
       let randomWord = '';
-      while (randomWord.length <= letters.length) randomWord = words.current.getRandomWordWithPrefix(letters);
+      randomWord = chooseRandomWord(evenWords);
       console.log('getting word');
       console.log(randomWord);
       // since gameLogic ran right before this function was called
@@ -49,9 +49,12 @@ function App() {
     }
     else { // LOSE SCENARIO
 
-      // computer odds are less than 50%, so lets stretch out the game
-      // by picking the longest word
-      const newLetter = longestWord[letters.length];
+      // computer odds are 50% or less, so lets stretch out the game
+      // by picking the longest words
+      const LongestWords = getWordsOfLength(prefixWords, longest);
+      console.log(LongestWords);
+      const LongWord = chooseRandomWord(LongestWords, longest);
+      const newLetter = LongWord[letters.length];
       // setting state 
       setLetters(letters + newLetter);
       return newLetter;
@@ -148,18 +151,21 @@ function App() {
   return (
     <div className="App">
       <h1>Ghost Game</h1>
-      <label htmlFor="search">Enter Letter:{` `}</label>
+      <label htmlFor="search" >Enter Letter:{` `}</label>
       <input
         type="text"
+        disabled={isWinner}
         name="search"
         value={letters}
         id="search"
         onChange={handleOnChange}
       />
-      <button className="button_title" onClick={finishTurn}>Finish Turn</button>
+      <button className="button_title" disabled={isWinner} onClick={finishTurn}>Finish Turn</button>
       {win && <div>{win}</div>}
       <ul>
-        {matches && matches.map(word => <li key={word}>{word}</li>)}
+        {matches && matches.map((word, index) => {
+          if (index < 20) return <li key={word}>{word}</li>
+        })}
       </ul>
     </div>
   );
