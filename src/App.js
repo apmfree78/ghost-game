@@ -2,8 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import {
   chooseRandomWord,
   getLongestWords,
-  getValidLetters,
-  getWinningLetters,
   mineWinningLetters
 } from './computer';
 import { playSound } from './library/sounds'
@@ -143,6 +141,7 @@ function App() {
       // run game logic again to see if there is a winner
       gameLogic("computer", letters + newLetter);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [turn])
 
 
@@ -174,6 +173,7 @@ function App() {
       <ul>
         {matches && matches.map((word, index) => {
           if (index < 20) return <li key={word}>{word}</li>
+          else return null;
         })}
       </ul>
     </div>
