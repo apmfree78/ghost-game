@@ -9,8 +9,8 @@ In the game of Ghost, two players take turns building up an English word from le
 ## Some notes on game creation
 
 - Converted dictionary file to .js file containing array. Used vim macro to convert list to array. Took 5 mins for macro to process all 170k lines!
-- Since focus was on the algorithm, kept design of game and program system design very simple. There's 1 file that holds the dictionary. And rest of code is in 2 seperate files.
-- If had to further refactor would break down into multiple components and seperate UI from logic. Would also make user input screen seperate from screen where current prefix string is shown and restrict user input to 1 character at a time - right now user can insert multiple characters, or remove characters.  This was helpful for debugging and testing.  That being said there is validation for user input - only [a-z] can be inputed.
+- Since focus was on the algorithm, kept design of game and program design very simple. There's 1 file that holds the dictionary. And rest of code is in 2 seperate files. See line 38 of computer.js for main algo for computer optimally picking next letter.
+- If had to further refactor would break down into multiple components and seperate UI from logic. Would also make user input seperate from screen where current prefix string is shown and restrict user input to 1 character at a time - right now user can insert multiple characters, or remove characters.  This was helpful for debugging and testing.  That being said there is validation for user input - only [a-z] can be inputed.
 
 ## The algorithm
 
@@ -24,7 +24,7 @@ This is the heart of the application.
 
 The game takes the following steps to determine optimal move for computer.
 
-It uses a recursion function that simulates the 'pc' and the 'human' alterating turns and playing EVERY valid next letter. So we can track ALL possible win/lose scenarios for each letter and place them in a hashmap.
+It uses a recursion function that simulates the 'pc' and the 'human' alterating turns and playing EVERY valid next letter. So we can track ALL possible win/lose scenarios and place them in a hashmap.
 
 1. It takes the current prefix and first determines all valid next letters (that when added to current prefix will result in another valid prefix).
 2. It then checks for each new prefix if it generates a valid word, if so the current player 'losses', if the current player is the computer, then we add the letter that generated the prefix to the hashmap and increment losses++. However if computer wins, it increments wins++.
@@ -50,5 +50,5 @@ Each letter is a valid next letter that can be added on current prefix.  If the 
 If there is are letters that have positive wins and no losses the computer picks one of them (randomly), if there's only 1, computer picks it.
 If there are no losses: 0 , then computer randomly picks a letter where wins > losses. 
 
-However if there are no wins > losses, then computer just picks the longest word prefix and picks the letter from there.
+However if there are no wins > losses, then computer just picks the longest word containing the prefix and picks the letter from there.
 
