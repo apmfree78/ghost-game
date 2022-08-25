@@ -170,13 +170,14 @@ function App() {
       />
       <button className="button_title" disabled={isWinner} onClick={finishTurn}>Finish Turn</button>
       {win && <div>{win}</div>}
+      <p>Matching Words (up to top 20) </p>
       <ul style={{ listStyleType: 'none' }}>
         {matches && matches.map((word, index) => {
           if (index < 20) return <li key={word}>{word}</li>
           else return null;
         })}
       </ul>
-    </div >
+    </div>
   );
 }
 
