@@ -6,14 +6,14 @@ In the game of Ghost, two players take turns building up an English word from le
 
 ## How to Play
 
-- Enter 1 letter in the input, and hit 'Finish Turn' button
+- Enter 1 letter in the input, and hit `Finish Turn` button
 - The AI will now takes its turn and enter a 2nd letter
 - It's now your turn again, enter a 3rd letter, be sure to make sure the 3rd letter you enter is a prefix of an actual word, if not, you lose! Click `Finish Turn` again.
 
 After the computer enters a 4th letter you need to be super careful.  Not only does the next (5th) letter you enter have to be a prefix of a word,
 but it cannot form an actual full word.  Otherwise you lose!  **Whoever, enters a letter that result in a string that cannot extend into a word (invalid prefix) OR a letter that forms a full word (4 characters or greater), first losses the game.**
 
-To play again click the 'Restart Game' button.
+To play again click the `Restart Game` button.
 
 ## Create with React and Javascript - plus some rad retro graphics and sounds too!
 
