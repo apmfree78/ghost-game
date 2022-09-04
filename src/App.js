@@ -1,20 +1,20 @@
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from 'react';
 import {
   chooseRandomWord,
   getLongestWords,
-  mineWinningLetters
+  mineWinningLetters,
 } from './computer';
-import { playSound } from './library/sounds'
-import "./App.css";
-import { dictionary } from "./ghost";
+import { playSound } from './library/sounds';
+import './App.css';
+import { dictionary } from './ghost';
 import trie from 'trie-prefix-tree';
 
 function App() {
-  const [win, setWin] = useState(''); // message for who has won 
+  const [win, setWin] = useState(''); // message for who has won
   const [isWinner, setIsWinner] = useState(false);
-  const [turn, setTurn] = useState(true);  // toggle turn between human and computer
+  const [turn, setTurn] = useState(true); // toggle turn between human and computer
   const [matches, setMatches] = useState([]); // words that match input letters
-  const [letters, setLetters] = useState(""); // string of input letters
+  const [letters, setLetters] = useState(''); // string of input letters
 
   //****************************************************************
   //*********** PREFIX TREE OF DICTIONARY *********************
@@ -26,11 +26,8 @@ function App() {
   //****************************************************************
   //****************************************************************
 
-
-
   // computer plays it's turn - see also useEffect [turn]
   function computerPlays() {
-
     // USING RECURSIVE ALGO TO SIMULATE GAME PLAY
     // AND FIND OPTIMAL LETTERS FOR COMPUTERS TO PLAY
     const winningLetters = mineWinningLetters(letters, prefixTree.current);
@@ -38,7 +35,8 @@ function App() {
 
     // checking to see if recursive simulation found winning letters
     // if so , randomly picking one
-    if (winningLetters) { // WIN SCENARIO
+    if (winningLetters) {
+      // WIN SCENARIO
 
       // choose a random letter from winningLetters
       // generated above
@@ -48,14 +46,14 @@ function App() {
       //setting state with new letter
       setLetters(letters + newLetter);
       return newLetter;
-    }
-    else { // LOSE SCENARIO
+    } else {
+      // LOSE SCENARIO
 
       // getting array of possible words from current prefix
       const prefixWords = prefixTree.current.getPrefix(letters);
 
       // computer odds are low, so lets stretch out the game
-      // by picking from words of the longest length 
+      // by picking from words of the longest length
       const LongestWords = getLongestWords(prefixWords);
       console.log('longest words');
       console.log(LongestWords);
@@ -63,7 +61,7 @@ function App() {
       if (LongWord.length <= letters.length) return '';
 
       const newLetter = LongWord[letters.length];
-      // setting state 
+      // setting state
       setLetters(letters + newLetter);
       return newLetter;
     }
@@ -71,15 +69,14 @@ function App() {
 
   // set winner of game
   function declareWinner(winner) {
-
     if (winner === 'pc') {
       setWin('Computer has WON!');
       setIsWinner(true);
-      playSound('lost')
+      playSound('lost');
     } else {
       setWin('Human Player has WON!');
       setIsWinner(true);
-      playSound('win')
+      playSound('win');
     }
   }
   // this function determins state of game
@@ -88,13 +85,12 @@ function App() {
   // sample output of potential word matches
   // is show on screen too
   function gameLogic(currentPlayer = 'human', sequence = letters) {
-
     //check if valid prefix was submitted
     const isValidPrefix = prefixTree.current.isPrefix(sequence);
 
     if (isValidPrefix) {
       //update matches
-      console.log(`${sequence} is valid`)
+      console.log(`${sequence} is valid`);
       const _words = prefixTree.current.getPrefix(sequence);
       setMatches([..._words]);
 
@@ -102,25 +98,23 @@ function App() {
       if (sequence.length > 3) {
         // check if prefix exists
 
-        //check if sequence form word, if so it's a losing move! 
+        //check if sequence form word, if so it's a losing move!
 
         if (prefixTree.current.hasWord(sequence)) {
-          //WE GOT A WINNER!  
-          console.log(`${sequence} is a word`)
+          //WE GOT A WINNER!
+          console.log(`${sequence} is a word`);
           if (currentPlayer === 'human') declareWinner('pc');
           else declareWinner('human');
         }
       }
-    }
-    else {
-
+    } else {
       console.log('no prefixes found, game over');
       if (currentPlayer === 'human') declareWinner('pc');
       else declareWinner('human');
     }
   }
 
-  // human just finished it turn, 
+  // human just finished it turn,
   // running gameLogic to see if there is a winner
   // and then switching to turn to computer
   const finishTurn = () => {
@@ -130,7 +124,17 @@ function App() {
 
     //switch to computer player
     setTurn(!turn);
-  }
+  };
+
+  const resetGame = () => {
+    // reseting game
+    setIsWinner(false);
+    setMatches([]);
+    setLetters('');
+
+    // finally set turn to human
+    setTurn(true);
+  };
 
   // this useEffect runs when 'turn' changes
   // then if there is no winner , computer plays
@@ -139,11 +143,9 @@ function App() {
     if (!isWinner && letters !== '') {
       const newLetter = computerPlays();
       // run game logic again to see if there is a winner
-      gameLogic("computer", letters + newLetter);
+      gameLogic('computer', letters + newLetter);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [turn])
-
+  }, [turn]);
 
   // validate user input and set state
   const handleOnChange = (event) => {
@@ -153,29 +155,51 @@ function App() {
     const lastChar = currentInput[currentInput.length - 1];
 
     // set state if a valid character was submitted
-    if ((/[a-z]/).test(lastChar)) setLetters(currentInput);
+    if (/[a-z]/.test(lastChar)) setLetters(currentInput);
   };
 
   return (
-    <div className="App">
+    <div>
       <h1>Ghost Game</h1>
-      <label htmlFor="search" >Enter Letter:{` `}</label>
+      <h3>Can You Beat an AI Word Wizard at this Game?</h3>
+      <p>
+        Please go to{' '}
+        <a
+          href='https://github.com/apmfree78/ghost-game'
+          target='_blank'
+          rel='noreferrer'
+        >
+          github page
+        </a>{' '}
+        for instructions on how to play.
+      </p>
+      <label htmlFor='search'>Enter Letter:{` `}</label>
       <input
-        type="text"
+        type='text'
         disabled={isWinner}
-        name="search"
+        name='search'
         value={letters}
-        id="search"
+        id='search'
         onChange={handleOnChange}
       />
-      <button className="button_title" disabled={isWinner} onClick={finishTurn}>Finish Turn</button>
-      {win && <div>{win}</div>}
+      <button className='button_title' disabled={isWinner} onClick={finishTurn}>
+        Finish Turn
+      </button>
+      {isWinner && (
+        <div>
+          {win}
+          <button className='button_title' onClick={resetGame}>
+            Restart Game
+          </button>
+        </div>
+      )}
       <p>Matching Words (up to top 20) </p>
       <ul style={{ listStyleType: 'none' }}>
-        {matches && matches.map((word, index) => {
-          if (index < 20) return <li key={word}>{word}</li>
-          else return null;
-        })}
+        {matches &&
+          matches.map((word, index) => {
+            if (index < 20) return <li key={word}>{word}</li>;
+            else return null;
+          })}
       </ul>
     </div>
   );
