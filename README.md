@@ -10,7 +10,7 @@ In the game of Ghost, two players take turns building up an English word from le
 
 - Converted dictionary file to .js file containing array. Used vim macro to convert list to array. Took 5 mins for macro to process all 170k lines!
 - Since focus was on the algorithm, kept design of game and program design very simple. There's 1 file that holds the dictionary. And rest of code is in 2 seperate files. See line 38 of computer.js for main algo for computer optimally picking next letter.
-- If had to further refactor would break down into multiple components and seperate UI from logic. Would also make user input seperate from screen where current prefix string is shown and restrict user input to 1 character at a time - right now user can insert multiple characters, or remove characters.  This was helpful for debugging and testing.  That being said there is validation for user input - only [a-z] can be inputed.
+- If had to further refactor would make user input seperate from screen where current prefix string is shown and restrict user input to 1 character at a time - right now user can insert multiple characters, or remove characters.  This was helpful for debugging and testing.  That being said there is validation for user input - only [a-z] can be inputed.
 
 ## The algorithm
 
