@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { GameInput } from './GameInput'
+import GameInput from './GameInput';
+import MatchingWords from './MatchingWords';
 import {
   chooseRandomWord,
   getLongestWords,
@@ -174,34 +175,15 @@ function App() {
         </a>{' '}
         for instructions on how to play.
       </p>
-      <label htmlFor='search'>Enter Letter:{` `}</label>
-      <input
-        type='text'
-        disabled={isWinner}
-        name='search'
-        value={letters}
-        id='search'
-        onChange={handleOnChange}
+      <GameInput
+        win={win}
+        isWinner={isWinner}
+        letters={letters}
+        handleOnChange={handleOnChange}
+        resetGame={resetGame}
+        finishTurn={finishTurn}
       />
-      <button className='button_title' disabled={isWinner} onClick={finishTurn}>
-        Finish Turn
-      </button>
-      {isWinner && (
-        <div>
-          {win}
-          <button className='button_title' onClick={resetGame}>
-            Restart Game
-          </button>
-        </div>
-      )}
-      <p>Matching Words (up to top 20) </p>
-      <ul style={{ listStyleType: 'none' }}>
-        {matches &&
-          matches.map((word, index) => {
-            if (index < 20) return <li key={word}>{word}</li>;
-            else return null;
-          })}
-      </ul>
+      <MatchingWords matches={matches} />
     </div>
   );
 }

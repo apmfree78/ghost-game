@@ -1,4 +1,8 @@
+/* eslint-disable react/prop-types */
+import React from 'react';
+
 const GameInput = ({
+  win,
   isWinner,
   letters,
   handleOnChange,
@@ -31,4 +35,4 @@ const GameInput = ({
   );
 };
 
-export default GameInput; 
+export default GameInput;
